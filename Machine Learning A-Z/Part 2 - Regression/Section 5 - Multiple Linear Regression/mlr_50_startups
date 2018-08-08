@@ -10,6 +10,7 @@ Created on Wed Aug  8 14:23:26 2018
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import statsmodels.formula.api as sm
 
 dataset = pd.read_csv('50_startups.csv')
 
@@ -23,6 +24,8 @@ X[:, 3] = le.fit_transform(X[:, 3])
 ohe = OneHotEncoder(categorical_features = [3])
 X = ohe.fit_transform(X).toarray()
 
+# Avoid dummy variable
+X = X[:, 1:]
 # spliting the dataset into training and test set
 from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -38,4 +41,38 @@ sc_y = StandardScaler()
 y_train = sc_y.fit_transform(y_train)
 y_test = sc_y.transform(y_test)
 """
-from sklearn.regression_model import 
+from sklearn.linear_model import LinearRegression
+lr = LinearRegression()
+lr.fit(X_train, y_train)
+y_pred = lr.predict(X_test)
+"""
+plt.scatter(X_train, X_test, color='red')
+plt.plot(X_train, lr.predict(X_train), color='blue')
+plt.show()
+"""
+X = np.append(arr = np.ones((50,1)).astype(int), values = X, axis = 1)
+#X_opt = X[:, [0,1,2,3,4,5]]
+X_opt = X[:, [0,1,2,3,4,5]]
+regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
+regressor_OLS.summary()
+
+X_opt = X[:, [0,1,3,4,5]]
+regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
+regressor_OLS.summary()
+
+X_opt = X[:, [0,3,4,5]]
+regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
+regressor_OLS.summary()
+
+X_opt = X[:, [0,3,5]]
+regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
+regressor_OLS.summary()
+
+X_opt = X[:, [0,3]]
+regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
+regressor_OLS.summary()
+
+
+
+
+
